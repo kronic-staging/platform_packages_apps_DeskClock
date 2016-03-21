@@ -50,7 +50,7 @@ public class AnimatorUtils {
 
         @Override
         public void set(View view, Integer value) {
-            view.getBackground().setAlpha(value);
+            if (view.getBackground() != null) view.getBackground().setAlpha(value);
         }
     };
 
@@ -63,7 +63,7 @@ public class AnimatorUtils {
 
         @Override
         public void set(ImageView view, Integer value) {
-            view.getDrawable().setAlpha(value);
+            if (view.getBackground() != null) view.getDrawable().setAlpha(value);
         }
     };
 
@@ -76,14 +76,19 @@ public class AnimatorUtils {
 
         @Override
         public void set(ImageView view, Integer value) {
+            if (view.getDrawable() == null) return;
             // Ensure the drawable is wrapped using DrawableCompat.
-            final Drawable drawable = view.getDrawable();
-            final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
-            if (wrappedDrawable != drawable) {
-                view.setImageDrawable(wrappedDrawable);
+            try {
+                final Drawable drawable = view.getDrawable();
+                final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+                if (wrappedDrawable != drawable) {
+                    view.setImageDrawable(wrappedDrawable);
+                }
+                // Set the new tint value via DrawableCompat.
+                DrawableCompat.setTint(wrappedDrawable, value);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            // Set the new tint value via DrawableCompat.
-            DrawableCompat.setTint(wrappedDrawable, value);
         }
     };
 
